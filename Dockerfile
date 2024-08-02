@@ -1,14 +1,9 @@
-# Use an official Java runtime as a parent image
+FROM maven:3.9.8-amazoncorretto-17-al2023 AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
+
 FROM openjdk:17-jdk-alpine
-
-# Set the working directory
-WORKDIR /app
-ARG JAR_FILE=target/*.jar
-# Copy the jar file into the container
-COPY ${JAR_FILE} /app/stock-quotes-service.jar
-
-# Make port 8080 available to the world outside this container
+COPY --from=build /home/app/target/*.jar /usr/local/lib/stock-quotes-service.jar
 EXPOSE 8080
-
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "stock-quotes-service.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/local/lib/stock-quotes-service.jar"]

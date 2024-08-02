@@ -1,0 +1,7 @@
+services:
+  stock-quotes-service:
+    image: stock-quotes-service
+    build:
+      context: .
+    ports:
+      - "8080:8080"
